@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Contact Form</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #e8f4f8;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        header {
+            background-color: #34495e;
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 {
+            margin: 0;
+            font-size: 2.8em;
+            font-weight: 300;
+        }
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+        .form-container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+        h2 {
+            text-align: center;
+            color: #34495e;
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+            box-sizing: border-box;
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+        }
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        .error {
+            border-color: #e74c3c !important;
+            box-shadow: 0 0 5px rgba(231, 76, 60, 0.3) !important;
+        }
+        .error-message {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border: 1px solid #c3e6cb;
+            display: none;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        button:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .character-count {
+            text-align: right;
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        footer {
+            background-color: #34495e;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Contact Me</h1>
+    </header>
+    <main>
+        <div class="form-container">
+            <h2>Get In Touch</h2>
+
+            <div id="successMessage" class="success-message">
+                Thank you! Your message has been sent successfully.
+            </div>
+
+            <form id="contactForm">
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" required>
+                    <div id="nameError" class="error-message">Name is required</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                    <div id="emailError" class="error-message">Please enter a valid email address</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="message">Message:</label>
+                    <textarea id="message" name="message" required maxlength="500"></textarea>
+                    <div id="messageError" class="error-message">Message is required</div>
+                    <div class="character-count">
+                        <span id="charCount">0</span>/500 characters
+                    </div>
+                </div>
+
+                <button type="submit" id="submitBtn">Send Message</button>
+            </form>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2025 [Your Name]. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Form validation and interactivity
+        const form = document.getElementById('contactForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const successMessage = document.getElementById('successMessage');
+        const messageTextarea = document.getElementById('message');
+        const charCount = document.getElementById('charCount');
+
+        // Real-time character count
+        messageTextarea.addEventListener('input', function() {
+            const count = this.value.length;
+            charCount.textContent = count;
+
+            // Change color when approaching limit
+            if (count > 450) {
+                charCount.style.color = '#e74c3c';
+            } else if (count > 400) {
+                charCount.style.color = '#f39c12';
+            } else {
+                charCount.style.color = '#666';
+            }
+        });
+
+        // Real-time validation
+        document.getElementById('name').addEventListener('blur', validateName);
+        document.getElementById('email').addEventListener('blur', validateEmail);
+        document.getElementById('message').addEventListener('blur', validateMessage);
+
+        function validateName() {
+            const name = document.getElementById('name');
+            const error = document.getElementById('nameError');
+            const value = name.value.trim();
+
+            if (value === '') {
+                showError(name, error, 'Name is required');
+                return false;
+            } else if (value.length < 2) {
+                showError(name, error, 'Name must be at least 2 characters');
+                return false;
+            } else {
+                hideError(name, error);
+                return true;
+            }
+        }
+
+        function validateEmail() {
+            const email = document.getElementById('email');
+            const error = document.getElementById('emailError');
+            const value = email.value.trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (value === '') {
+                showError(email, error, 'Email is required');
+                return false;
+            } else if (!emailRegex.test(value)) {
+                showError(email, error, 'Please enter a valid email address');
+                return false;
+            } else {
+                hideError(email, error);
+                return true;
+            }
+        }
+
+        function validateMessage() {
+            const message = document.getElementById('message');
+            const error = document.getElementById('messageError');
+            const value = message.value.trim();
+
+            if (value === '') {
+                showError(message, error, 'Message is required');
+                return false;
+            } else if (value.length < 10) {
+                showError(message, error, 'Message must be at least 10 characters');
+                return false;
+            } else {
+                hideError(message, error);
+                return true;
+            }
+        }
+
+        function showError(input, errorElement, message) {
+            input.classList.add('error');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
+
+        function hideError(input, errorElement) {
+            input.classList.remove('error');
+            errorElement.style.display = 'none';
+        }
+
+        // Form submission
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const isNameValid = validateName();
+            const isEmailValid = validateEmail();
+            const isMessageValid = validateMessage();
+
+            if (isNameValid && isEmailValid && isMessageValid) {
+                // Simulate form submission
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Sending...';
+
+                setTimeout(function() {
+                    // Show success message
+                    successMessage.style.display = 'block';
+
+                    // Reset form
+                    form.reset();
+                    charCount.textContent = '0';
+                    charCount.style.color = '#666';
+
+                    // Hide success message after 5 seconds
+                    setTimeout(function() {
+                        successMessage.style.display = 'none';
+                    }, 5000);
+
+                    // Reset button
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Send Message';
+
+                    console.log('Form submitted successfully!');
+                }, 2000);
+            } else {
+                console.log('Form validation failed');
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Interactive Contact Form loaded successfully!');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Personal Bio</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        header {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            margin: 0;
+            font-size: 2.5em;
+        }
+        main {
+            padding: 20px;
+        }
+        section {
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #3498db;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        p {
+            line-height: 1.6;
+            font-size: 1.1em;
+        }
+        .interactive-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #2980b9;
+        }
+        .counter-display {
+            font-size: 2em;
+            font-weight: bold;
+            color: #2c3e50;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .color-changer {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .color-box {
+            width: 100px;
+            height: 100px;
+            background: #3498db;
+            border-radius: 8px;
+            margin: 20px auto;
+            transition: background 0.3s;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background-color: #f8f9fa;
+            margin: 10px 0;
+            padding: 15px;
+            border-left: 4px solid #3498db;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        li:hover {
+            background-color: #e9ecef;
+            transform: translateX(5px);
+        }
+        .hidden {
+            display: none;
+        }
+        footer {
+            background-color: rgba(255, 255, 255, 0.9);
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>My Interactive Bio</h1>
+        </header>
+        <main>
+            <section>
+                <h2>About Me</h2>
+                <p>Hello! I'm [Your Name], a passionate web developer learning HTML, CSS, and JavaScript. I enjoy creating interactive websites and exploring new technologies.</p>
+                <div class="interactive-section">
+                    <h3>Click Counter</h3>
+                    <div class="counter-display" id="counter">0</div>
+                    <button onclick="incrementCounter()">Increment</button>
+                    <button onclick="decrementCounter()">Decrement</button>
+                    <button onclick="resetCounter()">Reset</button>
+                </div>
+            </section>
+
+            <section>
+                <h2>Interactive Interests</h2>
+                <p>Click on any interest to learn more:</p>
+                <ul id="interestsList">
+                    <li onclick="showInterest('web')">Web Development</li>
+                    <li onclick="showInterest('js')">JavaScript</li>
+                    <li onclick="showInterest('design')">UI/UX Design</li>
+                    <li onclick="showInterest('tech')">New Technologies</li>
+                </ul>
+                <div id="interestDetail" class="hidden interactive-section">
+                    <p id="interestText"></p>
+                </div>
+            </section>
+
+            <section>
+                <h2>Color Changer</h2>
+                <div class="color-changer">
+                    <div class="color-box" id="colorBox"></div>
+                    <button onclick="changeColor()">Change Color</button>
+                    <button onclick="randomColor()">Random Color</button>
+                </div>
+            </section>
+
+            <section>
+                <h2>Quick Quiz</h2>
+                <div class="interactive-section">
+                    <p>What is JavaScript primarily used for?</p>
+                    <button onclick="checkAnswer('styling')">Styling web pages</button>
+                    <button onclick="checkAnswer('interactivity')">Adding interactivity</button>
+                    <button onclick="checkAnswer('structure')">Creating page structure</button>
+                    <p id="quizResult"></p>
+                </div>
+            </section>
+        </main>
+        <footer>
+            <p>&copy; 2025 [Your Name]. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Counter functionality
+        let count = 0;
+
+        function incrementCounter() {
+            count++;
+            document.getElementById('counter').textContent = count;
+        }
+
+        function decrementCounter() {
+            count--;
+            document.getElementById('counter').textContent = count;
+        }
+
+        function resetCounter() {
+            count = 0;
+            document.getElementById('counter').textContent = count;
+        }
+
+        // Interest details
+        const interestDetails = {
+            web: "Web development involves creating websites and web applications using HTML, CSS, and JavaScript.",
+            js: "JavaScript is a programming language that adds interactivity to web pages.",
+            design: "UI/UX design focuses on creating user-friendly and visually appealing interfaces.",
+            tech: "Exploring new technologies helps me stay updated with the latest trends in web development."
+        };
+
+        function showInterest(interest) {
+            const detailDiv = document.getElementById('interestDetail');
+            const detailText = document.getElementById('interestText');
+
+            detailText.textContent = interestDetails[interest];
+            detailDiv.classList.remove('hidden');
+        }
+
+        // Color changer
+        const colors = ['#3498db', '#e74c3c', '#2ecc71', '#f39c12', '#9b59b6', '#1abc9c'];
+        let currentColorIndex = 0;
+
+        function changeColor() {
+            currentColorIndex = (currentColorIndex + 1) % colors.length;
+            document.getElementById('colorBox').style.background = colors[currentColorIndex];
+        }
+
+        function randomColor() {
+            const randomIndex = Math.floor(Math.random() * colors.length);
+            document.getElementById('colorBox').style.background = colors[randomIndex];
+        }
+
+        // Quiz functionality
+        function checkAnswer(answer) {
+            const result = document.getElementById('quizResult');
+            if (answer === 'interactivity') {
+                result.textContent = 'Correct! JavaScript adds interactivity to web pages.';
+                result.style.color = 'green';
+            } else {
+                result.textContent = 'Try again! JavaScript is mainly used for adding interactivity.';
+                result.style.color = 'red';
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Interactive Bio page loaded successfully!');
+        });
+    </script>
+</body>
+</html>
